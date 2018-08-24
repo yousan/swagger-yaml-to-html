@@ -1,5 +1,6 @@
 <?php
 $yaml = fgets(STDIN);
+echo $yaml;
 echo yaml_parse($yaml);
 exit;
 ?>
