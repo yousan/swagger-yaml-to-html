@@ -15,5 +15,10 @@
   "bugs": {
     "url": "https://github.com/yousan/swagger-yaml-to-html/issues"
   },
-  "homepage": "https://github.com/yousan/swagger-yaml-to-html#readme"
+  "homepage": "https://github.com/yousan/swagger-yaml-to-html#readme",
+  "dependencies": {
+    "babel": "^6.23.0",
+    "jest": "^23.5.0",
+    "typescript": "^3.0.1"
+  }
 }
