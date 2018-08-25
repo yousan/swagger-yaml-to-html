@@ -25,11 +25,13 @@
   },
   "devDependencies": {
     "@kyleshockey/js-yaml": "^1.0.1",
+    "@types/axios": "^0.14.0",
     "@types/jest": "^23.3.1",
     "@types/js-yaml": "^3.11.2",
     "@types/node": "^10.9.2",
     "@types/request": "^2.47.1",
     "@types/request-promise-native": "^1.0.15",
+    "axios": "^0.18.0",
     "jest": "^23.5.0",
     "request-promise-native": "^1.0.5",
     "ts-jest": "^23.1.4",

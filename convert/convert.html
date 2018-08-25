@@ -25,6 +25,7 @@
             background: #fafafa;
         }
     </style>
+    <script src="dist/index.js"></script>
 </head>
 <body>
 
@@ -66,9 +67,16 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/3.2.2/swagger-ui-bundle.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/3.2.2/swagger-ui-standalone-preset.js"></script>
 <script>
-    window.onload = function () {
 
-        var spec = '';
+    setTimeout(function() {
+        console.log('delayed run!');
+        console.log('yaml is...' + yaml_data);
+    }, 500);
+    console.log(main());
+
+    window.onload = function (spec) {
+
+        // var spec = '';
 
         // Build a system
         const ui = SwaggerUIBundle({
