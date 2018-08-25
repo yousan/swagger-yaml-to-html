@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "compile": "tsc",
-    "test": "jest"
+    "test": "jest",
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
@@ -20,15 +21,22 @@
   "dependencies": {
     "babel": "^6.23.0",
     "jest": "^23.5.0",
-    "typescript": "^3.0.1",
-    "yaml": "^1.0.0-rc.8"
+    "typescript": "^3.0.1"
   },
   "devDependencies": {
+    "@kyleshockey/js-yaml": "^1.0.1",
     "@types/jest": "^23.3.1",
     "@types/js-yaml": "^3.11.2",
+    "@types/node": "^10.9.2",
+    "@types/request": "^2.47.1",
+    "@types/request-promise-native": "^1.0.15",
     "jest": "^23.5.0",
+    "request-promise-native": "^1.0.5",
     "ts-jest": "^23.1.4",
+    "ts-loader": "^4.5.0",
     "typescript": "^3.0.1",
-    "typings": "^2.1.1"
+    "typings": "^2.1.1",
+    "webpack": "^4.17.1",
+    "webpack-cli": "^3.1.0"
   }
 }
