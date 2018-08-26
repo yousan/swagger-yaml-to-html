@@ -34,6 +34,7 @@
     "axios": "^0.18.0",
     "jest": "^23.5.0",
     "request-promise-native": "^1.0.5",
+    "swagger-ui": "^3.18.2",
     "ts-jest": "^23.1.4",
     "ts-loader": "^4.5.0",
     "typescript": "^3.0.1",
