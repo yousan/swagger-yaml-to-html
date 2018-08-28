@@ -17,20 +17,20 @@
 //     // interface SwaggerUIBundle();
 // }
 
-declare module 'SwaggerUIBundle' {
-
-    export interface IOptions {
-        spec: string;
-        dom_id: string;
-        deepLinking: boolean;
-        presets: string[];
-        plugins: string[];
-        layout: string;
-    }
-
-
-    export function SwaggerUIBundle(options: IOptions): void;
-}
+// declare module 'SwaggerUIBundle' {
+//
+//     export interface IOptions {
+//         spec: string;
+//         dom_id: string;
+//         deepLinking: boolean;
+//         presets: string[];
+//         plugins: string[];
+//         layout: string;
+//     }
+//
+//
+//     export function SwaggerUIBundle(options: IOptions): void;
+// }
 
 // export declare module SwaggerUIBundle {
 //     let presets: IPresets;

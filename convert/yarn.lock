@@ -157,6 +157,10 @@
   dependencies:
     "@types/request" "*"
 
+"@types/swagger-ui-dist":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@types/swagger-ui-dist/-/swagger-ui-dist-3.0.0.tgz#9caf0e064ad7cf2e8fd5bdff0a2005f50a90d68d"
+
 "@types/tough-cookie@*":
   version "2.3.3"
   resolved "https://registry.yarnpkg.com/@types/tough-cookie/-/tough-cookie-2.3.3.tgz#7f226d67d654ec9070e755f46daebf014628e9d9"

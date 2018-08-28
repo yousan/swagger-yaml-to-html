@@ -1,1 +1,1 @@
-declare module 'SwaggerUIStandalonePreset';
+// declare module 'SwaggerUIStandalonePreset';

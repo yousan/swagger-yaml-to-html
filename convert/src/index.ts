@@ -1,6 +1,7 @@
 import * as yaml from 'js-yaml';
 import * as axios from 'axios';
-import {IOptions, SwaggerUIBundle} from 'SwaggerUIBundle'
+import * as SwaggerUIBundle from 'swagger-ui-dist'
+// import {IOptions, SwaggerUIBundle} from 'SwaggerUIBundle'
 
 // import { SwaggerUIBundle } from 'SwaggerUIBundle'
 // const { presets } = SwaggerUIBundle;
@@ -30,7 +31,7 @@ const  syth = function () {
             .then((response) => {
                 const spec: string = JSON.stringify(response.data);
                 // const options: SwaggerUIBundle.Options= new SwaggerUIBundle.Options();
-                const options: IOptions = {
+                const options: Object = {
                         spec: spec,
                         dom_id: '#swagger-ui',
                         deepLinking: true,
@@ -44,7 +45,7 @@ const  syth = function () {
                         layout: "StandaloneLayout"
                     };
 
-                const ui = SwaggerUIBundle(options);
+                const ui = SwaggerUIBundle({});
 
                 // const ui = SwaggerUIBundle({
                 //     spec: spec,

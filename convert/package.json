@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/yousan/swagger-yaml-to-html#readme",
   "dependencies": {
+    "@types/swagger-ui-dist": "^3.0.0",
     "babel": "^6.23.0",
     "jest": "^23.5.0",
     "typescript": "^3.0.1"

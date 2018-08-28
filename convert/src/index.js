@@ -3,7 +3,8 @@ exports.__esModule = true;
 var axios = require("axios");
 var SwaggerUIBundle_1 = require("SwaggerUIBundle");
 var presets = SwaggerUIBundle_1.SwaggerUIBundle.presets;
-require("swagger-ui-dist/swagger-ui.css");
+// require("swagger-ui-dist/swagger-ui.css");
+
 // import {SwaggerUIBundle, SwaggerUIStandalonePreset} from "./@types/SwaggerUIBundle";
 //import * as SwaggerUIBundle from 'SwaggerUIBundle'
 // import * as SwaggerUIStandalonePreset from 'SwaggerUIStandalonePreset'
