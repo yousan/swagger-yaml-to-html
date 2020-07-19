@@ -101,5 +101,5 @@ window.onload = function() {
 </html>
 """
 
-spec = yaml.load(sys.stdin)
+spec = yaml.load(sys.stdin, Loader=yaml.FullLoader)
 sys.stdout.write(TEMPLATE % json.dumps(spec))
