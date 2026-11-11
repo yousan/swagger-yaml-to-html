@@ -92,8 +92,14 @@ jobs:
           set -euo pipefail
           docker buildx imagetools inspect "$IMAGE:latest"
           for platform in ${PLATFORMS//,/ }; do
+            # Run each platform's own manifest; running the multi-arch digest with
+            # --pull always more than once fails with "cannot overwrite digest".
+            digest=$(docker buildx imagetools inspect "$PUSHED" --format \
+              "{{range .Manifest.Manifests}}{{if eq (printf \"%s/%s\" .Platform.OS .Platform.Architecture) \"$platform\"}}{{.Digest}}{{end}}{{end}}")
+            test -n "$digest"
+            ref="$IMAGE@$digest"
             out="$RUNNER_TEMP/petstore-pushed.html"
-            docker run --rm -i --pull always --platform "$platform" "$PUSHED" < petstore.yaml > "$out"
+            docker run --rm -i --platform "$platform" "$ref" < petstore.yaml > "$out"
             grep -q '"title": "Swagger Petstore"' "$out"
-            echo "$platform: $(docker run --rm --pull always --quiet --platform "$platform" "$PUSHED" uname -m) OK"
+            echo "$platform: $digest $(docker run --rm --platform "$platform" "$ref" uname -m) OK"
           done
