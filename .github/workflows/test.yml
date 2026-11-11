@@ -24,3 +24,12 @@ jobs:
       - run: python3 -m unittest discover -s tests -v
         env:
           CONVERTER: docker run --rm -i swagger-yaml-to-html
+
+  docker-php:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -f Dockerfile-php -t swagger-yaml-to-html-php .
+      - run: python3 -m unittest discover -s tests -v
+        env:
+          CONVERTER: docker run --rm -i swagger-yaml-to-html-php
