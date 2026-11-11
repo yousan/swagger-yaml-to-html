@@ -1,0 +1,18 @@
+openapi: "3.0.0"
+info:
+  title: Dates
+  version: "1.0"
+x-changelog:
+  2020-01-01: initial
+paths:
+  /dates:
+    get:
+      responses:
+        '200':
+          description: ok
+          content:
+            application/json:
+              example:
+                created: 2020-01-02
+                updated: 2020-01-02T03:04:05Z
+                local: 2020-01-02T03:04:05.5+09:00
