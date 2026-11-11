@@ -1,0 +1,27 @@
+openapi: "3.0.0"
+info:
+  title: YAML types
+  version: "1.0"
+paths: {}
+components:
+  schemas:
+    Base: &base
+      type: object
+      description: base
+    Point:
+      <<: *base
+      description: point
+      properties:
+        x: {type: integer}
+        y: {type: integer}
+        n: {type: integer}
+x-values:
+  flags: [y, n, yes, no, on, off, true, false]
+  int64-max: 9223372036854775807
+  uint64-max: 18446744073709551615
+  octal: 017
+  hex: 0x1F
+  underscore: 1_000
+  infinite: .inf
+  empty-map: {}
+  empty-list: []

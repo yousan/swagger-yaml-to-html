@@ -88,6 +88,27 @@ class ConvertTest(unittest.TestCase):
         html = convert(os.path.join(FIXTURES, "script-tag.yaml"))
         self.assertRegex(html, r'"paths":\s*\{\}')
 
+    def test_yaml_types_are_read_like_pyyaml(self):
+        spec = embedded_spec(convert(os.path.join(FIXTURES, "yaml-types.yaml")))
+        point = lookup(spec, "components", "schemas", "Point")
+        # Merge keys (<<) are applied; later keys win.
+        self.assertEqual(lookup(point, "type"), "object")
+        self.assertEqual(lookup(point, "description"), "point")
+        # "y" and "n" are property names, not booleans.
+        self.assertEqual([k for k, _ in lookup(point, "properties")], ["x", "y", "n"])
+        values = lookup(spec, "x-values")
+        self.assertEqual(lookup(values, "flags"),
+                         ["y", "n", True, False, True, False, True, False])
+        self.assertEqual(lookup(values, "int64-max"), 9223372036854775807)
+        self.assertEqual(lookup(values, "uint64-max"), 18446744073709551615)
+        self.assertEqual(lookup(values, "octal"), 15)
+        self.assertEqual(lookup(values, "hex"), 31)
+        self.assertEqual(lookup(values, "underscore"), 1000)
+        self.assertEqual(lookup(values, "infinite"), float("inf"))
+        self.assertEqual(lookup(values, "empty-map"), [])  # [] of pairs == {}
+        self.assertRegex(convert(os.path.join(FIXTURES, "yaml-types.yaml")),
+                         r'"empty-map":\s*\{\},\s*"empty-list":\s*\[\]')
+
     def test_html_in_spec_does_not_break_page(self):
         html = convert(os.path.join(FIXTURES, "script-tag.yaml"))
         # Only the template's own </script> tags may appear in the output,
