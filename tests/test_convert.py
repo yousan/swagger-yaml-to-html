@@ -63,6 +63,19 @@ class ConvertTest(unittest.TestCase):
         self.assertEqual(lookup(spec, "info", "title"), "Swagger Petstore")
         self.assertEqual([k for k, _ in lookup(spec, "paths")], ["/pets", "/pets/{petId}"])
 
+    def test_swagger_ui_assets(self):
+        # https://github.com/yousan/swagger-yaml-to-html/issues/14 : Swagger UI before
+        # 5.0 cannot render OpenAPI 3.1, and before 4.1.3 it is affected by CVE-2021-46708.
+        html = convert(os.path.join(ROOT, "petstore.yaml"))
+        tags = re.findall(r"<(?:script|link)[^>]*swagger-ui/[^>]*>", html)
+        self.assertEqual(len(tags), 3)
+        versions = {re.search(r"swagger-ui/([0-9.]+)/", tag).group(1) for tag in tags}
+        self.assertEqual(len(versions), 1, versions)
+        self.assertGreaterEqual(tuple(int(n) for n in versions.pop().split(".")), (5, 0, 0))
+        for tag in tags:
+            self.assertRegex(tag, r'integrity="sha(256|384|512)-')
+        self.assertIn("queryConfigEnabled: false", html)
+
     def test_key_order_is_preserved(self):
         # Regression guard for https://github.com/yousan/swagger-yaml-to-html/issues/5 :
         # keys must reach Swagger UI in the order they are written in the YAML file.
