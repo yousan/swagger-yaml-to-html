@@ -1,0 +1,99 @@
+name: docker-publish
+
+# Builds the Python image (Dockerfile) for amd64 and arm64, tests it, and pushes
+# yousan/swagger-yaml-to-html:latest to Docker Hub on master / manual runs.
+# The PHP image (Dockerfile-php) is not published.
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - Dockerfile
+      - requirements.txt
+      - swagger-yaml-to-html.py
+      - petstore.yaml
+      - tests/**
+      - .github/workflows/docker-publish.yml
+
+concurrency:
+  group: docker-publish-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  IMAGE: yousan/swagger-yaml-to-html
+  PLATFORMS: linux/amd64,linux/arm64
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      HAS_DOCKERHUB_SECRETS: ${{ secrets.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_TOKEN != '' }}
+      # Only master (push or a manual run started on master) may overwrite :latest.
+      PUSH_EVENT: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/master' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-qemu-action@v3
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Build and test each platform
+        run: |
+          set -euo pipefail
+          for platform in ${PLATFORMS//,/ }; do
+            tag="swagger-yaml-to-html:test-${platform//\//-}"
+            echo "::group::$platform"
+            docker buildx build --platform "$platform" --load -t "$tag" .
+            echo "machine: $(docker run --rm --platform "$platform" "$tag" uname -m)"
+            # Same command as the README.
+            out="$RUNNER_TEMP/petstore.html"
+            docker run --rm -i --platform "$platform" "$tag" < petstore.yaml > "$out"
+            grep -q 'swagger-ui-bundle.js' "$out"
+            grep -q '"title": "Swagger Petstore"' "$out"
+            CONVERTER="docker run --rm -i --platform $platform $tag" python3 -m unittest discover -s tests -v
+            echo "::endgroup::"
+          done
+
+      - name: Skip push
+        if: env.PUSH_EVENT == 'true' && env.HAS_DOCKERHUB_SECRETS != 'true'
+        run: echo "::notice title=Docker Hub push skipped::DOCKERHUB_USERNAME / DOCKERHUB_TOKEN secrets are not set. The image was built and tested but not pushed."
+
+      - uses: docker/login-action@v3
+        if: env.PUSH_EVENT == 'true' && env.HAS_DOCKERHUB_SECRETS == 'true'
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Push ${{ env.IMAGE }}:latest
+        id: push
+        uses: docker/build-push-action@v6
+        if: env.PUSH_EVENT == 'true' && env.HAS_DOCKERHUB_SECRETS == 'true'
+        with:
+          context: .
+          platforms: ${{ env.PLATFORMS }}
+          push: true
+          tags: ${{ env.IMAGE }}:latest
+          # Keep the manifest list to the two images (no attestation entries).
+          provenance: false
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+
+      - name: Check the pushed image
+        if: env.PUSH_EVENT == 'true' && env.HAS_DOCKERHUB_SECRETS == 'true'
+        env:
+          PUSHED: ${{ env.IMAGE }}@${{ steps.push.outputs.digest }}
+        run: |
+          set -euo pipefail
+          docker buildx imagetools inspect "$IMAGE:latest"
+          for platform in ${PLATFORMS//,/ }; do
+            out="$RUNNER_TEMP/petstore-pushed.html"
+            docker run --rm -i --pull always --platform "$platform" "$PUSHED" < petstore.yaml > "$out"
+            grep -q '"title": "Swagger Petstore"' "$out"
+            echo "$platform: $(docker run --rm --pull always --quiet --platform "$platform" "$PUSHED" uname -m) OK"
+          done

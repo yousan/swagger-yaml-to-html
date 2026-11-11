@@ -1,4 +1,4 @@
-![Docker Automated build](https://img.shields.io/docker/automated/yousan/swagger-yaml-to-html)
+[![docker-publish](https://github.com/yousan/swagger-yaml-to-html/actions/workflows/docker-publish.yml/badge.svg?branch=master)](https://github.com/yousan/swagger-yaml-to-html/actions/workflows/docker-publish.yml)
 
 # Swagger YAML into HTML
 
