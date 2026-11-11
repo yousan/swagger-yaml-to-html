@@ -70,6 +70,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Push ${{ env.IMAGE }}:latest
+        id: push
         uses: docker/build-push-action@v6
         if: env.PUSH_EVENT == 'true' && env.HAS_DOCKERHUB_SECRETS == 'true'
         with:
@@ -85,12 +86,14 @@ jobs:
 
       - name: Check the pushed image
         if: env.PUSH_EVENT == 'true' && env.HAS_DOCKERHUB_SECRETS == 'true'
+        env:
+          PUSHED: ${{ env.IMAGE }}@${{ steps.push.outputs.digest }}
         run: |
           set -euo pipefail
           docker buildx imagetools inspect "$IMAGE:latest"
           for platform in ${PLATFORMS//,/ }; do
             out="$RUNNER_TEMP/petstore-pushed.html"
-            docker run --rm -i --pull always --platform "$platform" "$IMAGE:latest" < petstore.yaml > "$out"
+            docker run --rm -i --pull always --platform "$platform" "$PUSHED" < petstore.yaml > "$out"
             grep -q '"title": "Swagger Petstore"' "$out"
-            echo "$platform: $(docker run --rm --pull always --quiet --platform "$platform" "$IMAGE:latest" uname -m) OK"
+            echo "$platform: $(docker run --rm --pull always --quiet --platform "$platform" "$PUSHED" uname -m) OK"
           done
