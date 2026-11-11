@@ -1,0 +1,6 @@
+openapi: "3.0.0"
+info:
+  title: Script tag
+  version: "1.0"
+  description: "Mentions </script><script>window.injected = true</script> and <!--<script> & co."
+paths: {}

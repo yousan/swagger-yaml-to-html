@@ -12,7 +12,8 @@
 Usage:
     python swagger-yaml-to-html.py < /path/to/api.yaml > doc.html
 """
-import yaml, json, sys
+import json, sys
+import yaml
 
 TEMPLATE = """
 <!DOCTYPE html>
@@ -69,5 +70,26 @@ window.onload = function() {
 </html>
 """
 
-spec = yaml.load(sys.stdin, Loader=yaml.FullLoader)
-sys.stdout.write(TEMPLATE % json.dumps(spec))
+
+class SpecLoader(yaml.SafeLoader):
+    """SafeLoader that keeps timestamps and !!binary values as the strings written in
+    the file, so that they can always be written out as JSON unchanged."""
+
+
+SpecLoader.add_constructor("tag:yaml.org,2002:timestamp", SpecLoader.construct_scalar)
+SpecLoader.add_constructor("tag:yaml.org,2002:binary", SpecLoader.construct_scalar)
+
+
+def spec_to_js(spec):
+    # Key order follows the YAML file (dicts keep insertion order).
+    # "<", ">" and "&" are written as \u escapes so that text such as "</script>" or
+    # "<!--<script>" inside the spec cannot end or confuse the inline script block.
+    return (json.dumps(spec)
+            .replace("<", "\\u003c")
+            .replace(">", "\\u003e")
+            .replace("&", "\\u0026"))
+
+
+if __name__ == "__main__":
+    spec = yaml.load(sys.stdin, Loader=SpecLoader)
+    sys.stdout.write(TEMPLATE % spec_to_js(spec))

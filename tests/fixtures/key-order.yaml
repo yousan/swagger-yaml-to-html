@@ -1,0 +1,24 @@
+openapi: "3.0.0"
+info:
+  title: Key order
+  version: "1.0"
+paths:
+  /order:
+    get:
+      summary: Keys must stay in the order of this file (issue 5)
+      responses:
+        '200':
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  zeta: {type: string}
+                  alpha: {type: string}
+                  mike: {type: string}
+              example:
+                param1: value
+                object2:
+                  - param: value
+                    objects: ["1", "2"]
